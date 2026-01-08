@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📸 Fotos do Natal 2024</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* === TELA DE CARREGAMENTO (ISCA) === */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a472a 0%, #2d5a3d 50%, #1a472a 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Flocos de neve */
+        .snowflakes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .snowflake {
+            position: absolute;
+            top: -20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.5rem;
+            animation: fall linear infinite;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        .christmas-title {
+            font-family: 'Mountains of Christmas', cursive;
+            font-size: 2.5rem;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3), 0 0 20px rgba(255, 215, 0, 0.3);
+            margin-bottom: 1rem;
+            text-align: center;
+            padding: 0 1rem;
+        }
+
+        .subtitle {
+            color: #e8e8e8;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        /* Árvore de Natal animada */
+        .tree-container {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .tree {
+            font-size: 5rem;
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                filter: drop-shadow(0 0 10px #ffd700);
+            }
+            to {
+                filter: drop-shadow(0 0 25px #ff6b6b) drop-shadow(0 0 35px #ffd700);
+            }
+        }
+
+        /* Barra de progresso */
+        .progress-container {
+            width: 280px;
+            max-width: 90%;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            padding: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: linear-gradient(90deg, #ff6b6b, #ffd700, #ff6b6b);
+            background-size: 200% 100%;
+            border-radius: 50px;
+            width: 0%;
+            animation: loading 4s ease-out forwards, shimmer 1s linear infinite;
+        }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            20% { width: 25%; }
+            40% { width: 45%; }
+            60% { width: 70%; }
+            80% { width: 85%; }
+            100% { width: 100%; }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 0.95rem;
+            margin-top: 0.5rem;
+        }
+
+        .loading-text span {
+            animation: dots 1.5s infinite;
+        }
+
+        .loading-text span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-text span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes dots {
+            0%, 20% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        .photo-count {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Mini galeria fake */
+        .mini-gallery {
+            display: flex;
+            gap: 10px;
+            margin-top: 1.5rem;
+            opacity: 0;
+            animation: fadeInGallery 1s ease-out 1.5s forwards;
+        }
+
+        @keyframes fadeInGallery {
+            to { opacity: 1; }
+        }
+
+        .mini-photo {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .mini-photo:nth-child(2) { animation-delay: 0.3s; }
+        .mini-photo:nth-child(3) { animation-delay: 0.6s; }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+
+        /* === JUMPSCARE === */
+        .jumpscare {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .jumpscare.active {
+            display: flex;
+            animation: flash 0.1s ease-in-out 3;
+        }
+
+        @keyframes flash {
+            0%, 100% { background: #000; }
+            50% { background: #220000; }
+        }
+
+        .spider {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            animation: jumpIn 0.15s ease-out forwards, shake 0.1s ease-in-out infinite;
+        }
+
+        @keyframes jumpIn {
+            0% {
+                transform: scale(0.3) translateY(-100%);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            25% { transform: translateX(-5px) rotate(-2deg); }
+            75% { transform: translateX(5px) rotate(2deg); }
+        }
+
+        /* Texto do susto depois */
+        .gotcha {
+            position: absolute;
+            bottom: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Mountains of Christmas', cursive;
+            font-size: 2.5rem;
+            color: #ff0000;
+            text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
+            opacity: 0;
+            animation: fadeInGotcha 0.5s ease-out 0.5s forwards;
+        }
+
+        @keyframes fadeInGotcha {
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Tela de carregamento (isca) -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="snowflakes" id="snowflakes"></div>
+        
+        <h1 class="christmas-title">🎄 Fotos do Natal 2024 🎄</h1>
+        <p class="subtitle">Momentos especiais em família</p>
+        
+        <div class="tree-container">
+            <div class="tree">🎄</div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
+        
+        <p class="loading-text">
+            Carregando fotos<span>.</span><span>.</span><span>.</span>
+        </p>
+        
+        <p class="photo-count" id="photoCount">Preparando 47 fotos...</p>
+        
+        <div class="mini-gallery">
+            <div class="mini-photo">🎁</div>
+            <div class="mini-photo">🎅</div>
+            <div class="mini-photo">⭐</div>
+        </div>
+    </div>
+
+    <!-- Jumpscare -->
+    <div class="jumpscare" id="jumpscare">
+        <img 
+            class="spider" 
+            src="https://media1.tenor.com/m/W49DcI7VfvUAAAAd/scary-spider.gif" 
+            alt=""
+        >
+        <div class="gotcha">PEGADINHA! 🕷️</div>
+    </div>
+
+    <!-- Áudio do susto -->
+    <audio id="scareSound" preload="auto">
+        <source src="https://www.myinstants.com/media/sounds/jump-scare.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Criar flocos de neve
+        function createSnowflakes() {
+            const container = document.getElementById('snowflakes');
+            const snowflakeChars = ['❄', '❅', '❆', '✦', '✧'];
+            
+            for (let i = 0; i < 30; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.className = 'snowflake';
+                snowflake.textContent = snowflakeChars[Math.floor(Math.random() * snowflakeChars.length)];
+                snowflake.style.left = Math.random() * 100 + '%';
+                snowflake.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                snowflake.style.animationDelay = Math.random() * 5 + 's';
+                snowflake.style.fontSize = (Math.random() * 1.5 + 0.8) + 'rem';
+                snowflake.style.opacity = Math.random() * 0.5 + 0.5;
+                container.appendChild(snowflake);
+            }
+        }
+
+        // Atualizar contador de fotos fake
+        function updatePhotoCount() {
+            const counter = document.getElementById('photoCount');
+            const messages = [
+                'Preparando 47 fotos...',
+                'Carregando miniaturas...',
+                'Processando imagens...',
+                'Aplicando filtros de Natal...',
+                'Quase pronto...',
+                'Finalizando...'
+            ];
+            
+            let index = 0;
+            const interval = setInterval(() => {
+                index++;
+                if (index < messages.length) {
+                    counter.textContent = messages[index];
+                } else {
+                    clearInterval(interval);
+                }
+            }, 700);
+        }
+
+        // Trigger do jumpscare
+        function triggerJumpscare() {
+            const loading = document.getElementById('loadingScreen');
+            const jumpscare = document.getElementById('jumpscare');
+            const sound = document.getElementById('scareSound');
+
+            loading.classList.add('hidden');
+            jumpscare.classList.add('active');
+            
+            // Tentar tocar o som (pode ser bloqueado em mobile)
+            sound.volume = 1.0;
+            sound.play().catch(() => {
+                // Som bloqueado, continua sem áudio
+            });
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            createSnowflakes();
+            updatePhotoCount();
+            
+            // Jumpscare depois de 4.5 segundos
+            setTimeout(triggerJumpscare, 4500);
+        });
+    </script>
+</body>
+</html>
